@@ -51,12 +51,11 @@ class RegisteredUserController extends Controller
                 'last-name' => $request->last_name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'role' => 'Customer' //default
             ]);
 
             $credentials = $request->only('username', 'password');
             $token = auth::attempt($credentials);
-            return response()->json(['message' => 'Successfully created your account !','user'=>$user->role,'AccessToken:'=>$token], 201);
+            return response()->json(['message' => 'Successfully created your account !','user'=>$request->user()->role,'AccessToken:'=>$token], 201);
         }
     }
 }

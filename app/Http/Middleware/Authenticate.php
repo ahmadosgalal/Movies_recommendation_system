@@ -14,8 +14,8 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
-        if (! $request->expectsJson()) {
-            return route('login');
+        if (!(Auth::guard('api')->check()) or $request->user()->role != 'Customer') {
+            return response()->json(['message' => 'You are not an authenticated user'], 403);
         }
     }
 }

@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('last-name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('role');
+            $table->string('role')->default('Customer');
             $table->date('creation_date')->default(now());
             $table->date('updated_date')->default(now());
             $table->rememberToken();
