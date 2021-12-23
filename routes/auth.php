@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 
 
 // guest routes do not need any authentication
-Route::group(['middleware' => 'guest'], function(){
+Route::group(['middleware' => ['guest','cors']], function(){
 
 Route::get('/register', [RegisteredUserController::class, 'create'])
                 ->name('register');
@@ -30,21 +30,21 @@ Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 
 
 // customer routes
-Route::group(['middleware' => 'auth'], function(){
+Route::group(['middleware' => ['auth','cors']], function(){
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->name('logout');
  });
 
  //manager routes
- Route::group(['middleware' => 'auth-manager'], function(){
+ Route::group(['middleware' => ['auth-manager','cors']], function(){
     Route::post('manager/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
 
  });
 
  // admin routes
-Route::group(['middleware' => 'auth-admin'], function(){
+Route::group(['middleware' => ['auth-admin','cors']], function(){
     Route::post('admin/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
 
