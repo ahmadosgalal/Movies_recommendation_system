@@ -17,7 +17,7 @@ class AuthenticateManager
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!(Auth::guard('manager-api')->check()) or $request->user()->role != 'Manager') {
+        if (!(Auth::guard('manager-api')->check()) || $request->user()->role != 'Manager') {
             return response()->json(['message' => 'You are not an authenticated manager'], 403);
         }
     return $next($request);

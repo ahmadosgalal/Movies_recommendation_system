@@ -17,7 +17,7 @@ class AuthenticateAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!(Auth::guard('admin-api')->check()) or $request->user()->role != 'Admin') {
+        if (!(Auth::guard('admin-api')->check()) || $request->user()->role != 'Admin') {
             return response()->json(['message' => 'You are not an authenticated admin'], 403);
         }
     return $next($request);
