@@ -35,7 +35,7 @@ class AuthenticatedSessionController extends Controller
         ]);
         
         if ($validator->fails()) {
-            return response()->json(['message' => 'Invalid data','Errors in'=>$validator->getMessageBag()], 400);
+            return response()->json(['message' => 'Invalid data','ErrorsIn'=>$validator->getMessageBag()], 400);
         } else {
             $credentials = $request->only('username', 'password');
             $token = Auth::attempt($credentials, true);
