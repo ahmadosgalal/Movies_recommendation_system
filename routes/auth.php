@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\MoviesController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -63,5 +64,8 @@ Route::group(['middleware' => ['auth','cors']], function(){
 Route::group(['middleware' => ['auth-admin','cors']], function(){
     Route::post('admin/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
+
+    Route::delete('/user/{id}', [UsersController::class, 'destroy'])
+    ->name('removeuser');
 
  });
