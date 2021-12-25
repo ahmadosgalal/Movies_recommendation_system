@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
@@ -19,7 +20,18 @@ class UsersController extends Controller
         $users = User::where('manager_request', '=', '1')->get();
         return $users;
     }
-
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function UserIndex()
+    {
+        //
+        $registeredUser=Auth::user();
+        $users = User::where('id', '!=', $registeredUser->id)->get();
+        return $users;
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -74,15 +86,28 @@ class UsersController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $user = User::findOrFail($id);
-        if($request->approved == 'true' && $user->manager_request == 1)
-        {
-            $user->role = 'Manager';
-        }
-        $user->manager_request = 0;
-        $user->save();
+        $user = User::find($id);
+        if($user){
+            $validator = Validator()->make($request->all(), [
+                'approved' => 'required' ,
+            ]);
+    
+            if ($validator->fails()) {
+                return response()->json(['message' => 'Something went wrong','ErrorsIn'=>$validator->getMessageBag()], 400);
+            } else {
 
-        return response()->json(['message' => 'Successfully responded to request'], 201);
+                if($request->approved == 1 && $user->manager_request == 1)
+                {
+                    $user->role = 'Manager';
+                }
+                $user->manager_request = 0;
+                $user->save();
+
+                return response()->json(['message' => 'Successfully responded to request'], 200);}
+        }
+        else{
+            return response()->json(['message' => 'No such user'], 404);
+        }
     }
 
     /**
@@ -94,9 +119,14 @@ class UsersController extends Controller
     public function destroy($id)
     {
         //
-        $user = User::findOrFail($id);
-        $user -> delete();
-
-        return response()->json(['message' => 'Successfully deleted the user'], 201);
+        $user = User::find($id);
+        if($user){
+            $user -> delete();
+            return response()->json(['message' => 'Successfully deleted the user'], 200);
+        }
+        else{
+            return response()->json(['message' => 'No such user'], 404);
+        }    
+        
     }
 }

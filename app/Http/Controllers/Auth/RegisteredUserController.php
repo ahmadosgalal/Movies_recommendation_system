@@ -40,7 +40,7 @@ class RegisteredUserController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'manager_request' => 'boolean'
+            'role'=>'required'
         ]);
         
         if ($validator->fails()) {
@@ -48,13 +48,16 @@ class RegisteredUserController extends Controller
         } else {
             $user = User::create([
                 'username' => $request->username,
-                'first-name' => $request->first_name,
-                'last-name' => $request->last_name,
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'manager_request' => $request->manager_request,
+                'manager_request' => 0,
             ]);
-
+            if($request->role=='Manager'){
+                $user->manager_request=1;
+                $user->save();
+            }
             $credentials = $request->only('username', 'password');
             $token = auth::attempt($credentials);
             return response()->json(['message' => 'Successfully created your account !','user'=>$request->user()->role,'AccessToken'=>$token], 201);
