@@ -12,11 +12,6 @@ class Reservation extends Model
     protected $fillable = [
         'user-id',
         'movie-id',
-        'room-id',
-        'seat-id',
-        'time-slot',
-        'date'
-
     ];
 
 
@@ -24,10 +19,6 @@ class Reservation extends Model
     const CREATED_AT = 'creation_date';
     const UPDATED_AT = 'updated_date';
 
-    public function room()
-    {
-        return $this->belongsTo(Room::class);
-    }
 
     public function user()
     {

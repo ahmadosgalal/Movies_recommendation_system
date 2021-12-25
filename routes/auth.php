@@ -9,7 +9,9 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\MoviesController;
+use App\Http\Controllers\ReservationsController;
 use App\Http\Controllers\UsersController;
+use App\Models\Reservation;
 use Illuminate\Support\Facades\Route;
 
 
@@ -34,6 +36,15 @@ Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 // customer routes
 Route::group(['middleware' => ['auth','cors']], function(){
 
+   Route::post('/movie/{id}/book', [ReservationsController::class, 'store'])
+    ->name('Add Reservation');
+
+   Route::get('/bookings', [ReservationsController::class, 'index'])
+    ->name('Get All reservations');
+
+    Route::delete('/bookings/{id}', [ReservationsController::class, 'destroy'])
+    ->name('Get All reservations');
+
    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->name('logout');
    
@@ -45,16 +56,19 @@ Route::group(['middleware' => ['auth','cors']], function(){
     ->name('logout');
    
     Route::get('/addmovie', [MoviesController::class, 'create'])
-    ->name('addmovie');
+    ->name('add movie form');
 
     Route::post('/movie', [MoviesController::class, 'store'])
-    ->name('addmovie');
+    ->name('add movie');
 
     Route::get('/movie/{id}/edit', [MoviesController::class, 'edit'])
-    ->name('editmovie');
+    ->name('edit movie');
+
+    Route::get('/movie/{id}/seats', [MoviesController::class, 'seats'])
+    ->name('get seats');
 
     Route::put('/movie/{id}', [MoviesController::class, 'update'])
-    ->name('updatemovie');
+    ->name('update movie');
 
     
 

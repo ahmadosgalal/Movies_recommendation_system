@@ -27,5 +27,10 @@ class Movie extends Model
         return $this->hasMany(Reservation::class);
 
     }
+
+    public function seats(){
+        return $this->belongsToMany(Seat::class);
+    }
+
 }
 
