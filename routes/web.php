@@ -23,9 +23,5 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-Route::get('/movie', [MoviesController::class, 'index'])
-      ->name('movies');
-
-Route::get('/movie/{id}', [MoviesController::class, 'show'])
-      ->name('movies');      
+      
 

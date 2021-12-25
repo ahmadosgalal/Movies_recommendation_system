@@ -18,15 +18,10 @@ use Illuminate\Support\Facades\Route;
 // guest routes do not need any authentication
 Route::group(['middleware' => ['guest','cors']], function(){
 
-Route::get('/register', [RegisteredUserController::class, 'create'])
-                ->name('register');
-
-Route::post('/register', [RegisteredUserController::class, 'store']);
-
-Route::get('/login', [AuthenticatedSessionController::class, 'create'])
-                ->name('login');
-
-Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+   Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
+   Route::post('/register', [RegisteredUserController::class, 'store']);
+   Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
+   Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 
 });
 
@@ -34,8 +29,7 @@ Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 // customer routes
 Route::group(['middleware' => ['auth','cors']], function(){
 
-   Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
-                ->name('logout');
+   Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
    
  });
 
@@ -43,17 +37,18 @@ Route::group(['middleware' => ['auth','cors']], function(){
  Route::group(['middleware' => ['auth-manager','cors']], function(){
     Route::post('manager/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
-   
+    
+
     Route::get('/addmovie', [MoviesController::class, 'create'])
     ->name('addmovie');
 
-    Route::post('/movie', [MoviesController::class, 'store'])
+    Route::post('/createmovie', [MoviesController::class, 'store'])
     ->name('addmovie');
 
     Route::get('/movie/{id}/edit', [MoviesController::class, 'edit'])
     ->name('editmovie');
 
-    Route::put('/movie/{id}', [MoviesController::class, 'update'])
+    Route::post('/editmovie/{id}', [MoviesController::class, 'update'])
     ->name('updatemovie');
 
     
@@ -69,3 +64,13 @@ Route::group(['middleware' => ['auth-admin','cors']], function(){
     ->name('removeuser');
 
  });
+
+//any user including guest
+Route::group(['middleware' => 'cors'], function(){
+   Route::get('/getAllMovies', [MoviesController::class, 'index'])
+      ->name('movies');
+
+   Route::get('/movie/{id}', [MoviesController::class, 'show'])
+      ->name('movies');
+});
+ 
