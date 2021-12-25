@@ -19,8 +19,8 @@ class CreateSeatsTable extends Migration
             $table->integer('row-number');
             $table->integer('availability'); // 0 or 1
             $table->unsignedInteger('room-id');
-            $table->date('creation_date');
-            $table->date('updated_date');
+            $table->date('creation_date')->default(now());
+            $table->date('updated_date')->default(now());
             
             $table->foreign('room-id')
             ->references('id')->on('rooms');
