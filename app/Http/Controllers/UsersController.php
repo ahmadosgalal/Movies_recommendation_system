@@ -15,6 +15,9 @@ class UsersController extends Controller
     public function index()
     {
         //
+        //$users = User::all();
+        $users = User::where('manager_request', '=', '1')->get();
+        return $users;
     }
 
     /**
@@ -25,6 +28,7 @@ class UsersController extends Controller
     public function create()
     {
         //
+
     }
 
     /**
@@ -70,6 +74,15 @@ class UsersController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $user = User::findOrFail($id);
+        if($request->approved == 'true' && $user->manager_request == 1)
+        {
+            $user->role = 'Manager';
+        }
+        $user->manager_request = 0;
+        $user->save();
+
+        return response()->json(['message' => 'Successfully responded to request'], 201);
     }
 
     /**

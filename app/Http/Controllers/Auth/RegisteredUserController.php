@@ -40,6 +40,7 @@ class RegisteredUserController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'manager_request' => 'boolean'
         ]);
         
         if ($validator->fails()) {
@@ -51,6 +52,7 @@ class RegisteredUserController extends Controller
                 'last-name' => $request->last_name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
+                'manager_request' => $request->manager_request,
             ]);
 
             $credentials = $request->only('username', 'password');

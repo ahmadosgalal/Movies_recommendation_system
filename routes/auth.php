@@ -68,4 +68,10 @@ Route::group(['middleware' => ['auth-admin','cors']], function(){
     Route::delete('/user/{id}', [UsersController::class, 'destroy'])
     ->name('removeuser');
 
+    Route::get('/approve', [UsersController::class, 'index'])
+    ->name('show requests');
+
+    Route::patch('/user/{id}', [UsersController::class, 'update'])
+    ->name('respond to requests');
+
  });
