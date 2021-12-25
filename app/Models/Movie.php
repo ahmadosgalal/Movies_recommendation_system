@@ -12,9 +12,9 @@ class Movie extends Model
     protected $fillable = [
         'title',
         'date',
-        'Start-time',
-        'End-time',
-        'Screen',
+        'start_time',
+        'end_time',
+        'screen',
         'poster',
     ];
 

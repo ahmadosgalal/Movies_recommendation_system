@@ -15,14 +15,14 @@ class CreateMoviesTable extends Migration
     {
         Schema::create('movies', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('title')->unique();
+            $table->string('title');
             $table->date('date');
-            $table->time('Start-time');
-            $table->time('End-time');
+            $table->time('start_time');
+            $table->time('end_time');
             $table->integer('screen');
             $table->string('poster'); //poster src 
-            $table->date('creation_date');
-            $table->date('updated_date');
+            $table->date('creation_date')->default(now());
+            $table->date('updated_date')->default(now());
         });
     }
 
