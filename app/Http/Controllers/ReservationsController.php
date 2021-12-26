@@ -78,6 +78,15 @@ class ReservationsController extends Controller
         if ($validator->fails()) {
             return response()->json(['message' => 'Something went wrong', $validator->getMessageBag()], 400);
         } else {
+            foreach ($request->seats as $seatId) {
+                $reservation =    DB::table('movie_seats')
+                    ->where('movie_id', $id)
+                    ->where('seat_id', $seatId)->where('reservation_id','!=',null)->first();
+                if($reservation){
+                    return response()->json(['message' => 'Sorry Seat(s) is already taken try another seats'], 403);
+                }    
+            }
+
             $reservation = Reservation::create([
                 'user_id' => $request->user()->id,
                 'movie_id' => $id,
