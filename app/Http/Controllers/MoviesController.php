@@ -185,7 +185,7 @@ class MoviesController extends Controller
         $seats = DB::table('seats')
             ->where('movie_id', '=', $id)
             ->join('movie_seats', 'seats.id', '=', 'movie_seats.seat_id')
-            ->select('seats.id', 'seats.column-number', 'seats.row-number', 'movie_seats.available')
+            ->select('seats.id', 'seats.column_number', 'seats.row_number', 'movie_seats.available')
             ->get();
         return $seats;    
     }

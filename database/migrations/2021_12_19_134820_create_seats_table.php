@@ -15,14 +15,14 @@ class CreateSeatsTable extends Migration
     {
         Schema::create('seats', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('column-number');
-            $table->integer('row-number');
+            $table->integer('column_number');
+            $table->integer('row_number');
             $table->integer('availability'); // 0 or 1
-            $table->unsignedInteger('room-id');
+            $table->unsignedInteger('room_id');
             $table->date('creation_date')->default(now());
             $table->date('updated_date')->default(now());
             
-            $table->foreign('room-id')
+            $table->foreign('room_id')
             ->references('id')->on('rooms');
         });
     }

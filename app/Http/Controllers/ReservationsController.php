@@ -19,10 +19,34 @@ class ReservationsController extends Controller
     public function index(Request $request)
     {
         //
+        $output = [];
         $reservations = DB::table('reservations')
-            ->where('user-id', '=', $request->user()->id)
+            ->where('user_id', '=', $request->user()->id)
             ->get();
-        return $reservations;
+
+        
+        foreach($reservations as $reservation){
+            $movieId=$reservation->movie_id;
+            $movie = DB::table('movies')->where('id', '=', $movieId)
+            ->get();
+            $seatsIds=DB::table('movie_seats')->where('reservation_id', '=', $reservation->id)
+            ->get();
+            $seats=[];
+            foreach($seatsIds as $seatsId){
+                $seat=DB::table('seats')->where('id', '=', $seatsId->seat_id)
+                ->get();
+                array_push($seats,['row'=>$seat[0]->row_number,'column'=>$seat[0]->column_number,]);
+            }
+            $output[] = [
+                'id'=>$reservation->id,
+                'movie_id'=> $movieId,
+                'movieTitle'=> $movie[0]->title,
+                'room'=> $movie[0]->screen,
+                'creation_date'=>$reservation->creation_date,
+                'seats'=>$seats,
+            ];
+        } 
+        return $output;
     }
 
     /**
@@ -55,8 +79,8 @@ class ReservationsController extends Controller
             return response()->json(['message' => 'Something went wrong', $validator->getMessageBag()], 400);
         } else {
             $reservation = Reservation::create([
-                'user-id' => $request->user()->id,
-                'movie-id' => $id,
+                'user_id' => $request->user()->id,
+                'movie_id' => $id,
             ]);
 
 
@@ -120,6 +144,8 @@ class ReservationsController extends Controller
         $condition = false;
         if ($condition) {
             //echo $dates[0]->start_time . " " . $dates[0]->date;
+            return response()->json(['message' => 'Sorry! The customer can cancel a reserved ticket only 3 hours
+            before the start of the event'], 400);
         } else {
             DB::table('movie_seats')
                 ->where('reservation_id', $id)

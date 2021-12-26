@@ -10,10 +10,10 @@ class Seat extends Model
     use HasFactory;
 
     protected $fillable = [
-        'column-number',
-        'row-number',
+        'column_number',
+        'row_number',
         'availability',
-        'room-id',
+        'room_id',
     ];
 
     public $timestamps = false;

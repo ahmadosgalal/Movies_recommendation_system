@@ -60,8 +60,6 @@ Route::group(['middleware' => ['auth','cors']], function(){
     Route::get('/movie/{id}/edit', [MoviesController::class, 'edit'])
     ->name('edit movie');
 
-    Route::get('/movie/{id}/seats', [MoviesController::class, 'seats'])
-    ->name('get seats');
 
     Route::post('/editmovie/{id}', [MoviesController::class, 'update'])
     ->name('updatemovie');
@@ -96,6 +94,9 @@ Route::group(['middleware' => 'cors'], function(){
 
    Route::get('/movie/{id}', [MoviesController::class, 'show'])
       ->name('movies');
+
+   Route::get('/movie/{id}/seats', [MoviesController::class, 'seats'])
+      ->name('get seats');   
 });
  
    

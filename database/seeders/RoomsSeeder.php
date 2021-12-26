@@ -17,10 +17,10 @@ class RoomsSeeder extends Seeder
         //
         Room::insert([
             [
-                'number-of-seats' => '20'
+                'number_of_seats' => '20'
             ],
             [
-                'number-of-seats' => '30'
+                'number_of_seats' => '30'
             ],
         ]);
     }

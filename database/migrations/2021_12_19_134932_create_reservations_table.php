@@ -15,16 +15,16 @@ class CreateReservationsTable extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user-id');
-            $table->unsignedInteger('movie-id');
+            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('movie_id');
             $table->date('creation_date')->default(now());
             $table->date('updated_date')->default(now());
 
 
-            $table->foreign('user-id')
+            $table->foreign('user_id')
             ->references('id')->on('users');
 
-            $table->foreign('movie-id')
+            $table->foreign('movie_id')
             ->references('id')->on('movies');
                         
             

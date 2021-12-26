@@ -15,7 +15,7 @@ class CreateRoomsTable extends Migration
     {
         Schema::create('rooms', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('number-of-seats');
+            $table->integer('number_of_seats');
             $table->date('creation_date')->default(now());
             $table->date('updated_date')->default(now());
         });

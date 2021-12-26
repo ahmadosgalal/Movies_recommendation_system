@@ -10,8 +10,8 @@ class Reservation extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user-id',
-        'movie-id',
+        'user_id',
+        'movie_id',
     ];
 
 

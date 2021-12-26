@@ -9,7 +9,7 @@ class Room extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'number-of-seats'
+        'number_of_seats'
     ];
 
     public $timestamps = false;
