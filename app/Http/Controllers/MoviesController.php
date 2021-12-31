@@ -51,32 +51,47 @@ class MoviesController extends Controller
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'screen' => 'required|integer|in:1,2',
-            'poster' => 'required' ,
+            'poster' => 'required',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => 'Something went wrong','ErrorsIn'=>$validator->getMessageBag()], 400);
+            return response()->json(['message' => 'Something went wrong', 'ErrorsIn' => $validator->getMessageBag()], 400);
         } else {
 
-            $movie = Movie::create([
-                'title' => $request->title,
-                'date' => $request->date,
-                'start_time' => $request->start_time,
-                'end_time' => $request->end_time,
-                'screen' => $request->screen,
-                'poster' => '',
-            ]);
-            $Image=$request->file('poster');
-            $ImageName='/movie_poster_'.$movie->id.'.'.$Image->getClientOriginalExtension();
-            $path=$request->file('poster')->move(public_path('/imgs/movies_posters'),$ImageName);
-            $PhotoUrl='/imgs/movies_posters'.$ImageName;
-            $movie->poster= $PhotoUrl;
-            $movie->save();
-            
 
-            $this->addSeats($movie->id, $request->screen);
 
-            return response()->json(['message' => 'Successfully added the movie'], 201);
+            $condition = true;
+            $condition = DB::table('movies')
+                ->where([
+                    ['screen', '=', $request->screen],
+                    ['date', '=', $request->date],
+                    ['end_time', '>', $request->start_time],
+                    ['start_time', '<', $request->end_time]
+                ])
+                ->count();
+            #print($condition);
+            if (!$condition) {
+                $movie = Movie::create([
+                    'title' => $request->title,
+                    'date' => $request->date,
+                    'start_time' => $request->start_time,
+                    'end_time' => $request->end_time,
+                    'screen' => $request->screen,
+                    'poster' => '',
+                ]);
+                $Image = $request->file('poster');
+                $ImageName = '/movie_poster_' . $movie->id . '.' . $Image->getClientOriginalExtension();
+                $path = $request->file('poster')->move(public_path('/imgs/movies_posters'), $ImageName);
+                $PhotoUrl = '/imgs/movies_posters' . $ImageName;
+                $movie->poster = $PhotoUrl;
+                $movie->save();
+
+                $this->addSeats($movie->id, $request->screen);
+
+                return response()->json(['message' => 'Successfully added the movie'], 201);
+            } else {
+                return response()->json(['message' => 'The room is not available'], 409);
+            }
         }
     }
 
@@ -124,25 +139,25 @@ class MoviesController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => 'Something went wrong','ErrorsIn'=>$validator->getMessageBag()], 400);
+            return response()->json(['message' => 'Something went wrong', 'ErrorsIn' => $validator->getMessageBag()], 400);
         } else {
             $movie = Movie::findOrFail($id);
-            if($movie){
+            if ($movie) {
                 //delete the image first..
-                if($request->file('poster')!=null ){
-                    $poster_image=$movie->poster;
-                    $imagepath=public_path().$poster_image;
-                    if($imagepath){
-                    File::delete($imagepath);}
-                    else{
-                        $movie->poster=''; 
+                if ($request->file('poster') != null) {
+                    $poster_image = $movie->poster;
+                    $imagepath = public_path() . $poster_image;
+                    if ($imagepath) {
+                        File::delete($imagepath);
+                    } else {
+                        $movie->poster = '';
                     }
                     //then update with the new poster..
-                    $Image=$request->file('poster');
-                    $ImageName='/movie_poster_'.$movie->id.'.'.$Image->getClientOriginalExtension();
-                    $path=$request->file('poster')->move(public_path('/imgs/movies_posters'),$ImageName);
-                    $PhotoUrl='/imgs/movies_posters'.$ImageName;
-                    $movie->poster= $PhotoUrl;
+                    $Image = $request->file('poster');
+                    $ImageName = '/movie_poster_' . $movie->id . '.' . $Image->getClientOriginalExtension();
+                    $path = $request->file('poster')->move(public_path('/imgs/movies_posters'), $ImageName);
+                    $PhotoUrl = '/imgs/movies_posters' . $ImageName;
+                    $movie->poster = $PhotoUrl;
                 }
                 //print ($request -> title);
                 $movie->title = $request->title;
@@ -152,16 +167,29 @@ class MoviesController extends Controller
                 $movie->screen = $request->screen;
                 $movie->updated_date = now();
                 //print($movie);
-                $movie -> save();
 
-                return response()->json(['message' => 'Successfully updated the movie'], 201);}
-            else{
+                $condition = true;
+                $condition = DB::table('movies')
+                    ->where([
+                        ['id', '!=', $id],
+                        ['screen', '=', $request->screen],
+                        ['date', '=', $request->date],
+                        ['end_time', '>', $request->start_time],
+                        ['start_time', '<', $request->end_time]
+                    ])
+                    ->count();
+
+                if (!$condition) {
+                    $movie->save();
+
+                    return response()->json(['message' => 'Successfully updated the movie'], 201);
+                } else {
+                    return response()->json(['message' => 'New slot is not available, not updated'], 409);
+                }
+            } else {
                 return response()->json(['message' => 'Movie does not exist'], 404);
             }
         }
-        
-            
-            
     }
 
     /**
@@ -187,7 +215,7 @@ class MoviesController extends Controller
             ->join('movie_seats', 'seats.id', '=', 'movie_seats.seat_id')
             ->select('seats.id', 'seats.column_number', 'seats.row_number', 'movie_seats.available')
             ->get();
-        return $seats;    
+        return $seats;
     }
 
     /**
