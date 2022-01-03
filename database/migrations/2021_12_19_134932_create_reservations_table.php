@@ -17,8 +17,8 @@ class CreateReservationsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('movie_id');
-            $table->date('creation_date')->default(now());
-            $table->date('updated_date')->default(now());
+            $table->date('creation_date');
+            $table->date('updated_date');
 
 
             $table->foreign('user_id')

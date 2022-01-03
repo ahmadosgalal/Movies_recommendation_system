@@ -90,6 +90,8 @@ class ReservationsController extends Controller
             $reservation = Reservation::create([
                 'user_id' => $request->user()->id,
                 'movie_id' => $id,
+                'creation_date'=>now(),
+                'updated_date'=>now()
             ]);
 
 
@@ -150,11 +152,27 @@ class ReservationsController extends Controller
             ->get();
         $time_new = Carbon::createFromFormat('Y/m/d H:i:s', now()); */
         //$time_old = Carbon::createFromFormat('Y/m/d H:i:s', );
+        $seats = DB::table('movie_seats')
+            ->where('reservation_id', '=', $id)
+            ->join('movies', 'movie_seats.movie_id', '=', 'movies.id')
+            ->get();
+    
+        $time_new = Carbon::now();
+        $time_new->addHours(5);
+        $splitted_time=explode("T", $time_new);
+        $date_time=explode(" ", $splitted_time[0]);
+        $date=$date_time[0];
+        $time=$date_time[1];
+       
+        $start_time=Carbon::create($seats[0]->start_time);
         $condition = false;
+        
+        if($date==$seats[0]->date &&  $time_new->hour < $start_time->hour){
+            $condition = true;
+        }
+        
         if ($condition) {
-            //echo $dates[0]->start_time . " " . $dates[0]->date;
-            return response()->json(['message' => 'Sorry! The customer can cancel a reserved ticket only 3 hours
-            before the start of the event'], 400);
+            return response()->json(['message' => 'Sorry! The customer can cancel a reserved ticket only 3 hours before the start of the event'], 400);
         } else {
             DB::table('movie_seats')
                 ->where('reservation_id', $id)

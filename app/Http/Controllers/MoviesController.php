@@ -78,6 +78,8 @@ class MoviesController extends Controller
                     'end_time' => $request->end_time,
                     'screen' => $request->screen,
                     'poster' => '',
+                    'updated_date'=>now(),
+                    'creation_date'=>now(),
                 ]);
                 $Image = $request->file('poster');
                 $ImageName = '/movie_poster_' . $movie->id . '.' . $Image->getClientOriginalExtension();
@@ -184,10 +186,10 @@ class MoviesController extends Controller
 
                     return response()->json(['message' => 'Successfully updated the movie'], 201);
                 } else {
-                    return response()->json(['message' => 'New slot is not available, not updated'], 409);
+                    return response()->json(['ErrorsIn' => 'Room is not available, try another timeslot or room'], 409);
                 }
             } else {
-                return response()->json(['message' => 'Movie does not exist'], 404);
+                return response()->json(['ErrorsIn' => 'Movie does not exist'], 404);
             }
         }
     }

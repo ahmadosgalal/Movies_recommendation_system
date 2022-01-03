@@ -16,6 +16,8 @@ class Movie extends Model
         'end_time',
         'screen',
         'poster',
+        'creation_date',
+        'updated_date',
     ];
 
 

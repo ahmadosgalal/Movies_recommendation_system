@@ -12,6 +12,8 @@ class Reservation extends Model
     protected $fillable = [
         'user_id',
         'movie_id',
+        'creation_date',
+        'updated_date',
     ];
 
 
