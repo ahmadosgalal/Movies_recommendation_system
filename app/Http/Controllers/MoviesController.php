@@ -92,7 +92,7 @@ class MoviesController extends Controller
 
                 return response()->json(['message' => 'Successfully added the movie'], 201);
             } else {
-                return response()->json(['message' => 'The room is not available'], 409);
+                return response()->json(['ErrorsIn' => 'The room is not available'], 409);
             }
         }
     }
